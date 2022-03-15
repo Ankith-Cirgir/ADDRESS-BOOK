@@ -3,20 +3,14 @@ function CreateNewCard(user){
     var designation = user.designation;
     var department = user.department;
 
-    $('<div>', {
-        class: 'card',
-        id: count,
-    }).appendTo('.result-container');
+    $('<div>', { class: 'card', id: count}).appendTo('.result-container');
 
     var img = $('<img>');
     img.attr('src', "avatar.jpg");
     img.attr('class', "profile-picture");
     img.appendTo('#'+count);
 
-    $('<div>', {
-        id: count+'-content',
-        class: 'content',
-    }).appendTo('#'+count);
+    $('<div>', { id: count+'-content', class: 'content'}).appendTo('#'+count);
 
     var person_name = $('<p></p>');
     person_name.attr('class', 'name');
@@ -33,10 +27,7 @@ function CreateNewCard(user){
     person_designation.text(designation);
     person_designation.appendTo("#"+count+"-content");
 
-    $('<div>', {
-        id: count+'-contact',
-        class: 'contact',
-    }).appendTo( "#"+count+'-content');
+    $('<div>', { id: count+'-contact', class: 'contact'}).appendTo( "#"+count+'-content');
 
     var img = $('<img>');
     img.attr('src', "call-grey.png");
@@ -74,7 +65,7 @@ function CreateNewCard(user){
 
         window.onclick = function(event) {
         if (event.target == modal) {
-            modal.style.display = "none";
+                modal.style.display = "none";
             }
         }
 
@@ -84,6 +75,7 @@ function CreateNewCard(user){
             this.text("Update");
             modal.style.display = "none";
         })
+        
         $("#cancel-button").click(function(){
             modal.style.display = "none";
         })
@@ -154,7 +146,6 @@ function HasNumber(myString) {
 
 function Search(type) { 
     var keyword = $("#search").val();
-
     for(var i=0 ; i<users.length ; i++){
         if(users[i][type].toLowerCase().includes(keyword.toLowerCase())){
             $("#" + i).show();
@@ -189,13 +180,20 @@ function ResetCount() {
     });
 }
 
-function CreateNewFilter( location, type) { 
+function CreateNewFilter(location, type) { 
     var list = $('<li>', {}).appendTo(location);
 
     var newFilter = $('<a></a>');
     newFilter.attr('name', type);
-    newFilter.text(type);
+    newFilter.attr('href',"#");
+    newFilter.html(type + " (<p>1</p>)");
     newFilter.appendTo(list);
+
+    $("li a").on('click', function () {
+        $("#search").val(this.name);
+        $("#filter").val($(this).parent().parent().attr("name")).change();
+        PressEnter(); 
+    });
 
 }
 
@@ -204,27 +202,18 @@ function UpdateEmployeeCount(){
         $(".department-list li a").each(function(){
             if($(this).attr("name") == users[i].department){ //Cannot be done using || in a single if
                 IncreaseEmployeeCount(this);
-            }else{
-                console.log("CREATE A NEW DEPARTMENT");
-                //CreateNewFilter($(".department-list"), users[i].department);
             }
         });
 
         $(".job-title-list li a").each(function(){
             if($(this).attr("name") == users[i].designation){
                 IncreaseEmployeeCount(this);
-            }else{
-                console.log("CREATE A NEW DESIGNATION");
-                //CreateNewFilter($(".job-title-list"), users[i].designation);
             }
         });
 
         $(".office-list li a").each(function(){
             if($(this).attr("name") == users[i].office){
                 IncreaseEmployeeCount(this);
-            }else{
-                console.log("CREATE A NEW OFFICE");
-                //CreateNewFilter($(".office-list"), users[i].office);
             }
         });
     }
@@ -248,19 +237,18 @@ function ResetInputs() {
 }
 
 function AppendAttributes(user){
-    
-    if(!departments.includes(user.department)){
-        CreateNewFilter(); //MAKE CHANGES
+    if(!departments.includes(user.department) && user.department != ""){
+        CreateNewFilter($(".department-list"), user.department);
         departments.push(user.department);
     }
 
-    if(!designations.includes(user.designation)){
-        CreateNewFilter(); //MAKE CHANGES
+    if(!designations.includes(user.designation) && user.designation != ""){
+        CreateNewFilter($(".job-title-list"), user.designation);
         designations.push(user.designation);
     }
 
-    if(!offices.includes(user.office)){
-        CreateNewFilter(); //MAKE CHANGES
+    if(!offices.includes(user.office) && user.office != ""){
+        CreateNewFilter($(".office-list"), user.office);
         offices.push(user.office);
     }
 }
@@ -292,12 +280,6 @@ $(document).ready(function(){
     $("#clear").click(function(){
         $("#search").val("");
     });
-
-    $("li a").click(function () { 
-        $("#search").val(this.name);
-        $("#filter").val($(this).parent().parent().attr("name")).change();
-        PressEnter(); 
-     });
 
     $("#add-employee").click(function(){
         var modal = document.getElementById("modal");
