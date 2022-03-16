@@ -75,13 +75,13 @@ function CreateNewCard(user){
             this.text("Update");
             modal.style.display = "none";
         })
-        
+
         $("#cancel-button").click(function(){
             modal.style.display = "none";
         })
     }); 
 
-    count += 1;    
+    count += 1;
 }
 
 function UpdateVariables(index){ 
@@ -261,6 +261,7 @@ function CreateUser(id, firstName, lastName, department, designation, office,pre
 }
 
 var users = [];
+
 var departments = [];
 var designations = [];
 var offices = [];
@@ -307,7 +308,7 @@ $(document).ready(function(){
         
         $("#positive-button").unbind("click").click(function(e) {
             e.preventDefault();
-
+            console.log(!HasNumber($("#firstname").val()));
             if(!HasNumber($("#firstname").val()) || !HasNumber($("#lastname").val())){
                 if(ValidateEmail($("#email").val())){
                     if(ValidatePhoneNumber($("#phone-number").val())){
@@ -374,5 +375,4 @@ $(document).ready(function(){
             Search(input);
         }
     });
-    
 });
