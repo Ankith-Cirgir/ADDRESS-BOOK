@@ -85,6 +85,10 @@ function CreateNewCard(user){
 }
 
 function UpdateVariables(index){ 
+    if(HasNumber($("#firstname").val() || HasNumber($("#lastname").val()))){
+        alert("Enter a valid Name");
+        return;
+    }
     users[index].department = $("#department").val();
     users[index].designation = $("#job-title").val();
     users[index].office = $("#office").val();
@@ -141,7 +145,9 @@ function ValidatePhoneNumber(inputtxt)
 }
 
 function HasNumber(myString) {
-    return /\d/.test(myString);
+    var re = /^[A-Za-z]+$/;
+    return !re.test(myString);
+    //return /\d+/g.test(myString);
 }
 
 function Search(type) { 
@@ -199,20 +205,8 @@ function CreateNewFilter(location, type) {
 
 function UpdateEmployeeCount(){ 
     for(var i=0 ; i<users.length ; i++){
-        $(".department-list li a").each(function(){
-            if($(this).attr("name") == users[i].department){ //Cannot be done using || in a single if
-                IncreaseEmployeeCount(this);
-            }
-        });
-
-        $(".job-title-list li a").each(function(){
-            if($(this).attr("name") == users[i].designation){
-                IncreaseEmployeeCount(this);
-            }
-        });
-
-        $(".office-list li a").each(function(){
-            if($(this).attr("name") == users[i].office){
+        $("li a").each(function(){
+            if($(this).attr("name") == users[i].department || $(this).attr("name") == users[i].designation || $(this).attr("name") == users[i].office){
                 IncreaseEmployeeCount(this);
             }
         });
@@ -237,6 +231,7 @@ function ResetInputs() {
 }
 
 function AppendAttributes(user){
+
     if(!departments.includes(user.department) && user.department != ""){
         CreateNewFilter($(".department-list"), user.department);
         departments.push(user.department);
@@ -308,7 +303,6 @@ $(document).ready(function(){
         
         $("#positive-button").unbind("click").click(function(e) {
             e.preventDefault();
-            console.log(!HasNumber($("#firstname").val()));
             if(!HasNumber($("#firstname").val()) || !HasNumber($("#lastname").val())){
                 if(ValidateEmail($("#email").val())){
                     if(ValidatePhoneNumber($("#phone-number").val())){
@@ -333,7 +327,7 @@ $(document).ready(function(){
             $(".close").click();
 
             ResetCount();
-            UpdateEmployeeCount(); //UPDATE THE ACCESS DATA ON LEFT
+            UpdateEmployeeCount();
         });
 
     });
@@ -361,7 +355,7 @@ $(document).ready(function(){
             UpdateVariables(id);
             modal.style.display = "none";
         })
-        $("#cancel-button").on('click', function(){
+        $("#cancel-button").unbind("click").on('click', function(){
             modal.style.display = "none";
         })
     });
