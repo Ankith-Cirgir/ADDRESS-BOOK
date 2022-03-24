@@ -5,54 +5,27 @@ function CreateNewCard(user){
 
     $('<div>', { class: 'card', id: count}).appendTo('.result-container');
 
-    var img = $('<img>');
-    img.attr('src', "avatar.jpg");
-    img.attr('class', "profile-picture");
-    img.appendTo('#'+count);
+    $('<img>').attr('src', "avatar.jpg").attr('class', "profile-picture").appendTo('#'+count);
 
     $('<div>', { id: count+'-content', class: 'content'}).appendTo('#'+count);
 
-    var person_name = $('<p></p>');
-    person_name.attr('class', 'name');
-    person_name.text(name);
-    person_name.appendTo("#"+count+"-content");
+    $('<p></p>').attr('class', 'name').text(name).appendTo("#"+count+"-content");
 
-    var person_department = $('<p></p>');
-    person_department.attr('class', 'department');
-    person_department.text(department);
-    person_department.appendTo("#"+count+"-content");
+    $('<p></p>').attr('class', 'department').text(department).appendTo("#"+count+"-content");
 
-    var person_designation = $('<p></p>');
-    person_designation.attr('class', 'designation');
-    person_designation.text(designation);
-    person_designation.appendTo("#"+count+"-content");
+    $('<p></p>').attr('class', 'designation').text(designation).appendTo("#"+count+"-content");
 
     $('<div>', { id: count+'-contact', class: 'contact'}).appendTo( "#"+count+'-content');
 
-    var img = $('<img>');
-    img.attr('src', "call-grey.png");
-    img.attr('class', "icons");
-    img.appendTo('#'+count+'-contact');
+    $('<img>').attr('src', "call-grey.png").attr('class', "icons").appendTo('#'+count+'-contact');
 
-    var img = $('<img>');
-    img.attr('src', "email-grey.png");
-    img.attr('class', "icons");
-    img.appendTo('#'+count+'-contact');
+    $('<img>').attr('src', "email-grey.png").attr('class', "icons").appendTo('#'+count+'-contact');
 
-    var img = $('<img>');
-    img.attr('src', "comment-grey.png");
-    img.attr('class', "icons");
-    img.appendTo('#'+count+'-contact');
+    $('<img>').attr('src', "comment-grey.png").attr('class', "icons").appendTo('#'+count+'-contact');
 
-    var img = $('<img>');
-    img.attr('src', "star-grey.png");
-    img.attr('class', "icons");
-    img.appendTo('#'+count+'-contact');
+    $('<img>').attr('src', "star-grey.png").attr('class', "icons").appendTo('#'+count+'-contact');
 
-    var img = $('<img>');
-    img.attr('src', "like-grey.png");
-    img.attr('class', "icons");
-    img.appendTo('#'+count+'-contact');
+    $('<img>').attr('src', "like-grey.png").attr('class', "icons").appendTo('#'+count+'-contact');
 
     $("#"+count).on('click', function(){
         var modal = document.getElementById("modal");
@@ -99,7 +72,6 @@ function UpdateVariables(index){
     users[index].phone = $("#phone-number").val();
     users[index].skypeID = $("#skype-ID").val();
 
-    ResetCount();
     UpdateEmployeeCount();
     UpdateCard(index);
 }
@@ -147,13 +119,12 @@ function ValidatePhoneNumber(inputtxt)
 function HasNumber(myString) {
     var re = /^[A-Za-z]+$/;
     return !re.test(myString);
-    //return /\d+/g.test(myString);
 }
 
-function Search(type) { 
+function Search(filterType) {
     var keyword = $("#search").val();
     for(var i=0 ; i<users.length ; i++){
-        if(users[i][type].toLowerCase().includes(keyword.toLowerCase())){
+        if(users[i][filterType].toLowerCase().includes(keyword.toLowerCase())){
             $("#" + i).show();
         }
     }
@@ -176,7 +147,7 @@ function PressEnter() {
     $("#search").trigger(e);   
 }
 
-function IncreaseEmployeeCount(context) { 
+function IncreaseEmployeeCount(context) { //leftmenuitem
     $(context).find('p').text(parseInt($(context).find('p').text(),10) + 1);
 }
 
@@ -189,11 +160,7 @@ function ResetCount() {
 function CreateNewFilter(location, type) { 
     var list = $('<li>', {}).appendTo(location);
 
-    var newFilter = $('<a></a>');
-    newFilter.attr('name', type);
-    newFilter.attr('href',"#");
-    newFilter.html(type + " (<p>1</p>)");
-    newFilter.appendTo(list);
+    $('<a></a>').attr('name', type).attr('href',"#").html(type + " (<p>1</p>)").appendTo(list);
 
     $("li a").on('click', function () {
         $("#search").val(this.name);
@@ -204,6 +171,7 @@ function CreateNewFilter(location, type) {
 }
 
 function UpdateEmployeeCount(){ 
+    ResetCount();
     for(var i=0 ; i<users.length ; i++){
         $("li a").each(function(){
             if($(this).attr("name") == users[i].department || $(this).attr("name") == users[i].designation || $(this).attr("name") == users[i].office){
@@ -218,16 +186,8 @@ function ResetCards(){
     Search("department");
 }
 
-function ResetInputs() { 
-    $("#firstname").val("");
-    $("#lastname").val("");
-    $("#department").val("");
-    $("#job-title").val("");
-    $("#office").val("");
-    $("#preffered-name").val("");
-    $("#email").val("");
-    $("#phone-number").val("");
-    $("#skype-ID").val("");
+function ResetInputs() {
+    $(".table input").val("");
 }
 
 function AppendAttributes(user){
@@ -270,7 +230,6 @@ $(document).ready(function(){
 
     AddAlphabets();
 
-    ResetCount();
     UpdateEmployeeCount(); 
 
     $("#clear").click(function(){
@@ -326,7 +285,6 @@ $(document).ready(function(){
             
             $(".close").click();
 
-            ResetCount();
             UpdateEmployeeCount();
         });
 
