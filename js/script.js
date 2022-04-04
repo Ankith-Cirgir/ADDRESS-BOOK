@@ -27,33 +27,7 @@ function CreateNewCard(user){
 
     $('<img>').attr('src', "like-grey.png").attr('class', "icons").appendTo('#'+count+'-contact');
 
-    $("#"+count).on('click', function(){
-        var modal = document.getElementById("modal");
-        $(".model-heading").text("Employee Details");
-        modal.style.display = "block";
-
-        $(".close").click(function(){
-            modal.style.display = "none";
-        });
-
-        window.onclick = function(event) {
-        if (event.target == modal) {
-                modal.style.display = "none";
-            }
-        }
-
-        EmployeeDetails(user);
-
-        $("#positive-button").click(function(){
-            this.text("Update");
-            modal.style.display = "none";
-        })
-
-        $("#cancel-button").click(function(){
-            modal.style.display = "none";
-        })
-    }); 
-
+    // removed on click listner and added it to on document ready
     count += 1;
 }
 
@@ -94,35 +68,65 @@ function EmployeeDetails(user){
     $("#skype-ID").val(user.skypeID);
 }
 
-function ValidateEmail(emailToTest)
-{
-     var atSymbol = emailToTest.indexOf("@");
-     if(atSymbol < 1) return false;
- 
-     var dot = emailToTest.indexOf(".");
-     if(dot <= atSymbol + 2) return false;
- 
-     if (dot === emailToTest.length - 1) return false;
- 
-     return true;
-}
-
-function ValidatePhoneNumber(inputtxt)
-{
-    var phoneno = /^\d{10}$/;
-    if(phoneno.test(inputtxt)){
-        return true;
+function ValidateForm(){
+    if(!HasNumber($("#firstname").val()) || !HasNumber($("#lastname").val())){
+        if(ValidateEmail($("#email").val())){
+            if(ValidatePhoneNumber($("#phone-number").val())){
+                var user = CreateUser(count, $("#firstname").val(), $("#lastname").val(), $("#department").val(), $("#job-title").val(), $("#office").val(), $("#preffered-name").val(), $("#email").val(), $("#phone-number").val(), $("#skype-ID").val());
+                ResetInputs();
+                
+            }else{
+                alert("Enter a Valid Phone Number...");
+                return;
+            }
+        }else{
+            alert("Enter a valid email");
+            return;
+        }
+    }else{
+        alert("Enter a valid Name...");
+        return;
     }
-    return false;
+
+    CreateNewCard(user);
+    $(".close").click();
+    UpdateEmployeeCount();
 }
 
-function HasNumber(myString) {
+function ValidateEmail(emailToTest){
+    var re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    return re.test(emailToTest);
+}
+
+function ValidatePhoneNumber(inputText){
+    var re = /^\d{10}$/;
+    return re.test(inputText);
+}
+
+function HasNumber(inputText) { 
     var re = /^[A-Za-z]+$/;
-    return !re.test(myString);
+    return !re.test(inputText);
+}
+
+function FilterAll(keyword){
+    $(".card").hide();
+    for(var i=0;i<users.length;i++){
+        Object.keys(users[i]).forEach(element => {
+            if(String(users[i][element]).includes(keyword)){
+                $("#"+i).show();
+            }
+        });
+    }
 }
 
 function Search(filterType) {
     var keyword = $("#search").val();
+
+    if(filterType == 'all'){
+        FilterAll(keyword);
+        return;
+    }
+
     for(var i=0 ; i<users.length ; i++){
         if(users[i][filterType].toLowerCase().includes(keyword.toLowerCase())){
             $("#" + i).show();
@@ -147,8 +151,8 @@ function PressEnter() {
     $("#search").trigger(e);   
 }
 
-function IncreaseEmployeeCount(context) { //leftmenuitem
-    $(context).find('p').text(parseInt($(context).find('p').text(),10) + 1);
+function IncreaseEmployeeCount(leftMenuItem) {
+    $(leftMenuItem).find('p').text(parseInt($(leftMenuItem).find('p').text(),10) + 1);
 }
 
 function ResetCount() { 
@@ -160,13 +164,8 @@ function ResetCount() {
 function CreateNewFilter(location, type) { 
     var list = $('<li>', {}).appendTo(location);
 
-    $('<a></a>').attr('name', type).attr('href',"#").html(type + " (<p>1</p>)").appendTo(list);
+    $('<a></a>').attr('name', type).attr('class','left-pannel').attr('href',"#").html(type + " (<p>1</p>)").appendTo(list);
 
-    $("li a").on('click', function () {
-        $("#search").val(this.name);
-        $("#filter").val($(this).parent().parent().attr("name")).change();
-        PressEnter(); 
-    });
 
 }
 
@@ -183,11 +182,11 @@ function UpdateEmployeeCount(){
 
 function ResetCards(){
     $("#clear").click();
-    Search("department");
+    Search("all");
 }
 
 function ResetInputs() {
-    $(".table input").val("");
+    $(".table input").val(""); 
 }
 
 function AppendAttributes(user){
@@ -230,7 +229,13 @@ $(document).ready(function(){
 
     AddAlphabets();
 
-    UpdateEmployeeCount(); 
+    UpdateEmployeeCount();
+
+    $(".access-column").on('click','a',function () {
+        $("#search").val(this.name);
+        $("#filter").val($(this).parent().parent().attr("name")).change();
+        PressEnter(); 
+    });
 
     $("#clear").click(function(){
         $("#search").val("");
@@ -239,8 +244,7 @@ $(document).ready(function(){
     $("#add-employee").click(function(){
         var modal = document.getElementById("modal");
         ResetInputs();
-        $("#positive-button").text("Save");
-
+        $("#btn-submit").text("Save");
 
         modal.style.display = "block";
         
@@ -260,39 +264,50 @@ $(document).ready(function(){
             }
         }
         
-        $("#positive-button").unbind("click").click(function(e) {
+        $("#btn-submit").unbind("click").click(function(e) { //btn-submit id
             e.preventDefault();
-            if(!HasNumber($("#firstname").val()) || !HasNumber($("#lastname").val())){
-                if(ValidateEmail($("#email").val())){
-                    if(ValidatePhoneNumber($("#phone-number").val())){
-                        var user = CreateUser(count, $("#firstname").val(), $("#lastname").val(), $("#department").val(), $("#job-title").val(), $("#office").val(), $("#preffered-name").val(), $("#email").val(), $("#phone-number").val(), $("#skype-ID").val());
-                        ResetInputs();
-                        
-                    }else{
-                        alert("Enter a Valid Phone Number...");
-                        return;
+
+            /*
+            $("#modal-form").validate({
+                rules: {
+                    firstname: {
+                        required : true,
+                        minlength : 3
+                    },
+                    email : {
+                        required: true,
+                        email: true
+                    },
+                    phonenumber : {
+                        depends : function() { 
+                            return ValidatePhoneNumber($("#phone-number").val());
+                        }
                     }
-                }else{
-                    alert("Enter a valid email");
-                    return;
+                },
+                messages : {
+                    name: {
+                        minlength: "Name should be at least 3 characters"
+                    }
+                },
+
+                submitHandler: function() {
+                    var user = CreateUser(count, $("#firstname").val(), $("#lastname").val(), $("#department").val(), $("#job-title").val(), $("#office").val(), $("#preffered-name").val(), $("#email").val(), $("#phone-number").val(), $("#skype-ID").val());
+                    CreateNewCard(user);
+                    $(".close").click();
+                    UpdateEmployeeCount();
+                    //form.submit();
                 }
-            }else{
-                alert("Enter a valid Name...");
-                return;
-            }
-
-            CreateNewCard(user);
+            }); */
+            ValidateForm();
             
-            $(".close").click();
-
-            UpdateEmployeeCount();
         });
 
     });
 
     $(".result-container").on('click', ".card", function () { 
         var modal = document.getElementById("modal");
-        $("#positive-button").text("Update");
+        $(".model-heading").text("Employee Details");
+        $("#btn-submit").text("Update");
         modal.style.display = "block";
 
         $(".close").click(function(){
@@ -306,10 +321,9 @@ $(document).ready(function(){
         }
 
         var id = this.id;
-
         EmployeeDetails(users[id]);
 
-        $("#positive-button").unbind("click").on('click', function(){
+        $("#btn-submit").unbind("click").on('click', function(){
             UpdateVariables(id);
             modal.style.display = "none";
         })
@@ -321,10 +335,10 @@ $(document).ready(function(){
     $('#search').keypress(function (e) {
         if (e.which == 13) {
             e.preventDefault();
-            var input = $("#filter").val()
+            var filterType = $("#filter").val()
             $(".card").hide();
 
-            Search(input);
+            Search(filterType);
         }
     });
 });
