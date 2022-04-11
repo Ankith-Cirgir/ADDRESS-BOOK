@@ -3,6 +3,8 @@
         <title></title>
         <link rel="stylesheet" href="address_book.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
         <script type="text/javascript" src="js/script.js"></script>
         <script type="text/javascript" src="js/static.js"></script>
     </head>
@@ -12,7 +14,7 @@
                 <img src="logo.png" alt="" class="logo">
                 <div>
                     <h1>Employee Directory</h1>
-                    <p>The Ultimate People Directory Expreience</p>
+                    <p>The Ultimate People Directory Experience</p>
                 </div>
             </div>
             <div class="profile">
@@ -69,62 +71,61 @@
                                 <h3 class="model-heading"></h3>
                                 <br>
                                 <hr>
-                                <div class="table">
-                                    <div class="model-column">
-                                        <div class="row">
-                                            <p>First Name</p>
-                                            <input type="text" id="firstname">
+                                <form id="modal-form">
+                                    <div class="table">
+                                        <div class="model-column">
+                                            <div class="row">
+                                                <p>First Name*</p>
+                                                <input type="text" name="firstname" id="firstname">
+                                            </div>
+                                            <div class="row">
+                                                <p>preffered Name</p>
+                                                <input type="text" name="prefferedname" id="preffered-name">
+                                            </div>
+                                            <div class="row">
+                                                <p>Job Title</p>
+                                                <input type="text" name="jobtitle" id="job-title">
+                                            </div>
+                                            <div class="row">
+                                                <p>Department</p>
+                                                <input type="text" name="department" id="department">
+                                            </div>
+                                            <div class="row">
+                                                <p>Phone Number*</p>
+                                                <input type="text" name="phonenumber" id="phone-number">
+                                            </div>
                                         </div>
-                                        <div class="row">
-                                            <p>preffered Name</p>
-                                            <input type="text" id="preffered-name">
-                                        </div>
-                                        <div class="row">
-                                            <p>Job Title</p>
-                                            <input type="text" id="job-title">
-                                        </div>
-                                        <div class="row">
-                                            <p>Department</p>
-                                            <input type="text" id="department">
-                                        </div>
-                                        <div class="row">
-                                            <p>Phone Number</p>
-                                            <input type="text" id="phone-number">
-                                        </div>
-                                    </div>
 
-                                    <div class="model-column">
-                                        <div class="row">
-                                            <p>Last Name</p><br>
-                                            <input type="text" id="lastname">
+                                        <div class="model-column">
+                                            <div class="row">
+                                                <p>Last Name*</p><br>
+                                                <input type="text" name="lastname" id="lastname">
+                                            </div>
+                                            <div class="row">
+                                                <p>Email*</p>
+                                                <td><input type="email" name="email" id="email"></td>
+                                            </div>
+                                            <div class="row">
+                                                <p>Office</p>
+                                                <input type="text" name="office" id="office">
+                                            </div>
+                                            <div class="row">
+                                                <p>Skype ID</p>
+                                                <input type="text" name="skypeid" id="skype-ID">
+                                            </div>
                                         </div>
-                                        <div class="row">
-                                            <p>Email</p>
-                                            <td><input type="text" id="email"></td>
-                                        </div>
-                                        <div class="row">
-                                            <p>Office</p>
-                                            <input type="text" id="office">
-                                        </div>
-                                        <div class="row">
-                                            <p>Skype ID</p>
-                                            <input type="text" id="skype-ID">
-                                        </div>
-                                    </div>
 
-                                </div>
-                                <div class="action-btns">
-                                    <button id="btn-submit" class="btn-primary" type="submit">Save</button>
-                                    <button id="cancel-button" class="btn-secondary">Cancel</button>
-                                </div>
+                                    </div>
+                                    <div class="action-btns">
+                                        <button id="btn-submit" class="btn-primary" type="submit">Save</button>
+                                        <button id="cancel-button" type="button" class="btn-secondary">Cancel</button>
+                                    </div>
+                                </form>
                             </div>
-                            </div>
+                        </div>
                         <!-------------------------------------------------------------------------------------------------------------------------->
                         <!----------------------------------------------------------CARD MODAL------------------------------------------------------>   
-                        <!--
-                        <div id="EmployeeDetailsModal" class="modal">
-
-                             Modal content 
+                        <div id="employee-details-modal" class="modal">
                             <div class="modal-content">
                                 <span class="close">&times;</span>
                                 <h3>Employee Details</h3>
@@ -182,7 +183,6 @@
                                 </div>
                             </div>
                             </div>
-                            -->
                         <!-------------------------------------------------------------------------------------------------------------------------->
                         
                     </div>

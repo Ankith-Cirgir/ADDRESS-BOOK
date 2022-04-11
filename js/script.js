@@ -32,19 +32,19 @@ function CreateNewCard(user){
 }
 
 function UpdateVariables(index){ 
-    if(HasNumber($("#firstname").val() || HasNumber($("#lastname").val()))){
+    if(HasNumber($("#details-firstname").val() || HasNumber($("#details-lastname").val()))){
         alert("Enter a valid Name");
         return;
     }
-    users[index].department = $("#department").val();
-    users[index].designation = $("#job-title").val();
-    users[index].office = $("#office").val();
-    users[index].firstName = $("#firstname").val();
-    users[index].lastName = $("#lastname").val();
-    users[index].prefferedName = $("#preffered-name").val();
-    users[index].email = $("#email").val();
-    users[index].phone = $("#phone-number").val();
-    users[index].skypeID = $("#skype-ID").val();
+    users[index].department = $("#details-department").val();
+    users[index].designation = $("#details-job-title").val();
+    users[index].office = $("#details-office").val();
+    users[index].firstName = $("#details-firstname").val();
+    users[index].lastName = $("#details-lastname").val();
+    users[index].prefferedName = $("#details-preffered-name").val();
+    users[index].email = $("#details-email").val();
+    users[index].phone = $("#details-phone-number").val();
+    users[index].skypeID = $("#details-skype-ID").val();
 
     UpdateEmployeeCount();
     UpdateCard(index);
@@ -57,50 +57,15 @@ function UpdateCard(index){
 }
 
 function EmployeeDetails(user){ 
-    $("#firstname").val(user.firstName);
-    $("#lastname").val(user.lastName);
-    $("#preffered-name").val(user.prefferedName);
-    $("#email").val(user.email);
-    $("#job-title").val(user.designation);
-    $("#office").val(user.office);
-    $("#department").val(user.department);
-    $("#phone-number").val(user.phone);
-    $("#skype-ID").val(user.skypeID);
-}
-
-function ValidateForm(){
-    if(!HasNumber($("#firstname").val()) || !HasNumber($("#lastname").val())){
-        if(ValidateEmail($("#email").val())){
-            if(ValidatePhoneNumber($("#phone-number").val())){
-                var user = CreateUser(count, $("#firstname").val(), $("#lastname").val(), $("#department").val(), $("#job-title").val(), $("#office").val(), $("#preffered-name").val(), $("#email").val(), $("#phone-number").val(), $("#skype-ID").val());
-                ResetInputs();
-                
-            }else{
-                alert("Enter a Valid Phone Number...");
-                return;
-            }
-        }else{
-            alert("Enter a valid email");
-            return;
-        }
-    }else{
-        alert("Enter a valid Name...");
-        return;
-    }
-
-    CreateNewCard(user);
-    $(".close").click();
-    UpdateEmployeeCount();
-}
-
-function ValidateEmail(emailToTest){
-    var re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    return re.test(emailToTest);
-}
-
-function ValidatePhoneNumber(inputText){
-    var re = /^\d{10}$/;
-    return re.test(inputText);
+    $("#details-firstname").val(user.firstName);
+    $("#details-lastname").val(user.lastName);
+    $("#details-preffered-name").val(user.prefferedName);
+    $("#details-email").val(user.email);
+    $("#details-job-title").val(user.designation);
+    $("#details-office").val(user.office);
+    $("#details-department").val(user.department);
+    $("#details-phone-number").val(user.phone);
+    $("#details-skype-ID").val(user.skypeID);
 }
 
 function HasNumber(inputText) { 
@@ -186,7 +151,8 @@ function ResetCards(){
 }
 
 function ResetInputs() {
-    $(".table input").val(""); 
+    $(".table input").val("");
+    //$(".error").style.display = "none";
 }
 
 function AppendAttributes(user){
@@ -231,6 +197,44 @@ $(document).ready(function(){
 
     UpdateEmployeeCount();
 
+    $("#modal-form").validate({
+        rules: {
+            firstname: "required",
+            lastname : "required",
+            email : {
+                required: true,
+                email : true,
+            },
+            phonenumber : {
+                minlength: 10,
+                maxlength: 10,
+                number: true,
+                required : true,
+            }
+        },
+        messages : {
+            firstname: "Please enter your firstname",
+            lastname: "Please enter your lastname",
+            email : {
+                required: "Email is manditory",
+            },
+            phonenumber : {
+                number: "Please enter number only"
+            },
+        },
+
+    });
+
+    $("#modal-form").submit(function(e){
+        e.preventDefault();
+        if($("#modal-form").valid()){
+            var user = CreateUser(count, $("#firstname").val(), $("#lastname").val(), $("#department").val(), $("#job-title").val(), $("#office").val(), $("#preffered-name").val(), $("#email").val(), $("#phone-number").val(), $("#skype-ID").val());
+            CreateNewCard(user);
+            $(".close").click();
+            UpdateEmployeeCount();
+        }
+    })
+
     $(".access-column").on('click','a',function () {
         $("#search").val(this.name);
         $("#filter").val($(this).parent().parent().attr("name")).change();
@@ -239,7 +243,7 @@ $(document).ready(function(){
 
     $("#clear").click(function(){
         $("#search").val("");
-    });
+    }); 
 
     $("#add-employee").click(function(){
         var modal = document.getElementById("modal");
@@ -247,6 +251,7 @@ $(document).ready(function(){
         $("#btn-submit").text("Save");
 
         modal.style.display = "block";
+        $("label").hide();
         
         $(".model-heading").text("Add Employee");
 
@@ -263,51 +268,12 @@ $(document).ready(function(){
             modal.style.display = "none";
             }
         }
-        
-        $("#btn-submit").unbind("click").click(function(e) { //btn-submit id
-            e.preventDefault();
-
-            /*
-            $("#modal-form").validate({
-                rules: {
-                    firstname: {
-                        required : true,
-                        minlength : 3
-                    },
-                    email : {
-                        required: true,
-                        email: true
-                    },
-                    phonenumber : {
-                        depends : function() { 
-                            return ValidatePhoneNumber($("#phone-number").val());
-                        }
-                    }
-                },
-                messages : {
-                    name: {
-                        minlength: "Name should be at least 3 characters"
-                    }
-                },
-
-                submitHandler: function() {
-                    var user = CreateUser(count, $("#firstname").val(), $("#lastname").val(), $("#department").val(), $("#job-title").val(), $("#office").val(), $("#preffered-name").val(), $("#email").val(), $("#phone-number").val(), $("#skype-ID").val());
-                    CreateNewCard(user);
-                    $(".close").click();
-                    UpdateEmployeeCount();
-                    //form.submit();
-                }
-            }); */
-            ValidateForm();
-            
-        });
 
     });
 
     $(".result-container").on('click', ".card", function () { 
-        var modal = document.getElementById("modal");
-        $(".model-heading").text("Employee Details");
-        $("#btn-submit").text("Update");
+        var modal = document.getElementById("employee-details-modal");
+
         modal.style.display = "block";
 
         $(".close").click(function(){
@@ -323,11 +289,11 @@ $(document).ready(function(){
         var id = this.id;
         EmployeeDetails(users[id]);
 
-        $("#btn-submit").unbind("click").on('click', function(){
+        $("#update-button").unbind("click").on('click', function(){
             UpdateVariables(id);
             modal.style.display = "none";
         })
-        $("#cancel-button").unbind("click").on('click', function(){
+        $("#employee-details-cancel-button").unbind("click").on('click', function(){
             modal.style.display = "none";
         })
     });
