@@ -14,3 +14,9 @@ function AddAlphabets() {
         }).appendTo('.search-alphabetic').attr('onclick',"AlphabeticSearch(\'"+  value.toLowerCase() +"\')");
     });
 }
+
+
+
+var departments = ["IT","Sales","HR","MD"];
+var designations = [".NET Development Lead", "SharePoint Practice Head", "Recruiting Expert", "Business Analyst"];
+var offices = ["India", "Seattle"];

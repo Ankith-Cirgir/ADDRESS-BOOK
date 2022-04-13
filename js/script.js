@@ -32,10 +32,7 @@ function CreateNewCard(user){
 }
 
 function UpdateVariables(index){ 
-    if(HasNumber($("#details-firstname").val() || HasNumber($("#details-lastname").val()))){
-        alert("Enter a valid Name");
-        return;
-    }
+    
     users[index].department = $("#details-department").val();
     users[index].designation = $("#details-job-title").val();
     users[index].office = $("#details-office").val();
@@ -45,7 +42,8 @@ function UpdateVariables(index){
     users[index].email = $("#details-email").val();
     users[index].phone = $("#details-phone-number").val();
     users[index].skypeID = $("#details-skype-ID").val();
-
+    
+    AppendAttributes(users[index]);
     UpdateEmployeeCount();
     UpdateCard(index);
 }
@@ -128,10 +126,7 @@ function ResetCount() {
 
 function CreateNewFilter(location, type) { 
     var list = $('<li>', {}).appendTo(location);
-
     $('<a></a>').attr('name', type).attr('class','left-pannel').attr('href',"#").html(type + " (<p>1</p>)").appendTo(list);
-
-
 }
 
 function UpdateEmployeeCount(){ 
@@ -156,7 +151,6 @@ function ResetInputs() {
 }
 
 function AppendAttributes(user){
-
     if(!departments.includes(user.department) && user.department != ""){
         CreateNewFilter($(".department-list"), user.department);
         departments.push(user.department);
@@ -180,18 +174,57 @@ function CreateUser(id, firstName, lastName, department, designation, office,pre
     return user;
 }
 
-var users = [];
+function PopulateQuickAccess() { 
+    for(i=0;i<departments.length;i++){
+        CreateNewFilter($(".department-list"), departments[i]);
+    }
+    for(i=0;i<designations.length;i++){
+        CreateNewFilter($(".job-title-list"), designations[i]);
+    }
+    for(i=0;i<offices.length;i++){
+        CreateNewFilter($(".office-list"), offices[i]);
+    }
+}
 
-var departments = [];
-var designations = [];
-var offices = [];
+function PopulateDropdowns(modal) {
+
+    for(i=0;i<offices.length;i++){
+        $("#office").append($('<option>', {
+            value: offices[i],
+            text: offices[i],
+        }));
+    }
+
+    for(i=0;i<designations.length;i++){
+        $("#job-title").append($('<option>', {
+            value: designations[i],
+            text: designations[i],
+        }));
+    }
+
+    for(i=0;i<departments.length;i++){
+        $("#department").append($('<option>', {
+            value: departments[i],
+            text: departments[i],
+        }));
+    }
+
+    
+    
+}
 
 count = 0;
+
+var users = [];
+
 
 
 $(document).ready(function(){
 
     CreateStaticAccounts();
+
+    PopulateQuickAccess();
+    PopulateDropdowns(modal);
 
     AddAlphabets();
 
@@ -248,6 +281,7 @@ $(document).ready(function(){
     $("#add-employee").click(function(){
         var modal = document.getElementById("modal");
         ResetInputs();
+        
         $("#btn-submit").text("Save");
 
         modal.style.display = "block";
